@@ -107,7 +107,8 @@
 <script src="https://cdn.jsdelivr.net/gh/pchen66/panolens.js@0.10.2/build/panolens.min.js"></script>
 
 <script>
-  const pano = new PANOLENS.ImagePanorama('b6.jpeg');
+  const panoMain = new PANOLENS.ImagePanorama('b6.jpeg');
+  const panoAlt = new PANOLENS.ImagePanorama('g1.jpeg');
 
   const viewer = new PANOLENS.Viewer({
     container: document.getElementById('panorama'),
@@ -116,8 +117,36 @@
     output: 'console'
   });
 
-  viewer.add(pano);
-  viewer.setPanorama(pano);
+  viewer.add(panoMain);
+  viewer.add(panoAlt);
+
+  let currentPano = panoMain;
+
+  function setUrlForPanorama(key) {
+    const url = new URL(window.location.href);
+    url.searchParams.set('pano', key);
+    window.history.replaceState({}, '', url);
+  }
+
+  function changePanorama(targetPano, key) {
+    viewer.setPanorama(targetPano);
+    currentPano = targetPano;
+    setUrlForPanorama(key);
+    closeMenu();
+  }
+
+  const params = new URLSearchParams(window.location.search);
+  const startPano = params.get('pano');
+
+  if (startPano === 'alt') {
+    viewer.setPanorama(panoAlt);
+    currentPano = panoAlt;
+    setUrlForPanorama('alt');
+  } else {
+    viewer.setPanorama(panoMain);
+    currentPano = panoMain;
+    setUrlForPanorama('main');
+  }
 
   function openHamburgerMenu() {
     const panel = document.getElementById('menuPanel');
@@ -130,6 +159,16 @@
     panel.innerHTML = '';
 
     const items = [
+      {
+        label: currentPano === panoAlt ? 'Main panorama' : 'Alternative panorama',
+        action: () => {
+          if (currentPano === panoAlt) {
+            changePanorama(panoMain, 'main');
+          } else {
+            changePanorama(panoAlt, 'alt');
+          }
+        }
+      },
       {
         label: 'Top view',
         action: () => window.open('b5.jpeg', '_blank')
