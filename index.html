@@ -109,6 +109,7 @@
 <script>
   const panoMain = new PANOLENS.ImagePanorama('b6.jpeg');
   const panoAlt = new PANOLENS.ImagePanorama('g1.jpeg');
+  const pano2805 = new PANOLENS.ImagePanorama('h6.jpeg');
 
   const viewer = new PANOLENS.Viewer({
     container: document.getElementById('panorama'),
@@ -119,6 +120,7 @@
 
   viewer.add(panoMain);
   viewer.add(panoAlt);
+  viewer.add(pano2805);
 
   let currentPano = panoMain;
 
@@ -142,6 +144,10 @@
     viewer.setPanorama(panoAlt);
     currentPano = panoAlt;
     setUrlForPanorama('alt');
+  } else if (startPano === '2805') {
+    viewer.setPanorama(pano2805);
+    currentPano = pano2805;
+    setUrlForPanorama('2805');
   } else {
     viewer.setPanorama(panoMain);
     currentPano = panoMain;
@@ -160,14 +166,16 @@
 
     const items = [
       {
-        label: currentPano === panoAlt ? 'Main panorama' : 'Alternative panorama',
-        action: () => {
-          if (currentPano === panoAlt) {
-            changePanorama(panoMain, 'main');
-          } else {
-            changePanorama(panoAlt, 'alt');
-          }
-        }
+        label: 'Main panorama',
+        action: () => changePanorama(panoMain, 'main')
+      },
+      {
+        label: 'Alternative panorama',
+        action: () => changePanorama(panoAlt, 'alt')
+      },
+      {
+        label: 'Panorama 28.05',
+        action: () => changePanorama(pano2805, '2805')
       },
       {
         label: 'Top view',
